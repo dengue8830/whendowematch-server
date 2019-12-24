@@ -12,7 +12,7 @@ interface IUser {
 
 export class EventService {
   events: IEvent[] = []
-  users: IUser[]
+  users: IUser[] = []
 
   addEvent(event: IEvent) {
     this.events.push(event);

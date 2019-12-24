@@ -31,7 +31,7 @@ export class MainSocketController {
 
   @OnMessage('addUser')
   onAddUser(@ConnectedSocket() socket: any, @MessageBody() userData: any, @SocketIO() io: any) {
-    console.log('nuevo user', event);
+    console.log('nuevo user', userData);
     const user = {
       name: userData.name,
       socketId: socket.id
