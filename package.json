@@ -32,9 +32,11 @@
   },
   "dependencies": {
     "@foal/core": "^1.0.0",
+    "@foal/jwt": "^1.3.1",
     "@foal/typeorm": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
     "reflect-metadata": "^0.1.13",
-    "socket-controllers": "^0.0.5",
+    "socket.io": "^2.3.0",
     "source-map-support": "^0.5.1",
     "sqlite3": "^4.0.0",
     "typeorm": "^0.2.6"
@@ -42,6 +44,7 @@
   "devDependencies": {
     "@types/mocha": "^5.2.1",
     "@types/node": "^8.0.47",
+    "@types/socket.io": "^2.1.4",
     "@typescript-eslint/eslint-plugin": "^2.7.0",
     "@typescript-eslint/parser": "^2.7.0",
     "concurrently": "^3.5.1",
