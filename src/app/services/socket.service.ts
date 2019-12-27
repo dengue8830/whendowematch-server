@@ -69,9 +69,14 @@ class SocketService {
 
   onDisconnect = (socket: SocketWithSession) => {
     const userId = socket.request.session.id;
-    logger.info(`disconnected ${userId}`);
     userService.changeConnectionStatus(userId, 'disconnected');
-    this.io.emit('userDisconnected', userService.findUserById(userId));
+    const user = userService.findUserById(userId);
+    if (!user) {
+      console.warn('wtf no existe el ' + userId);
+    } else {
+      this.io.emit('userDisconnected', user);
+      logger.info(`disconnected ${user.name}`);
+    }
   }
 
   onGetSchedules = (socket: SocketWithSession) => {

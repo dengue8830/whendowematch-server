@@ -17,17 +17,18 @@ export class ApiAuthController {
   @ValidateBody({
     additionalProperties: false,
     properties: {
-      name: { type: 'string' }
+      name: { type: 'string' },
+      color: { type: 'string' }
     },
-    required: ['name'],
+    required: ['name', 'color'],
     type: 'object'
   })
   register(ctx: Context) {
     const user = {
       id: new Date().getTime().toString(),
-      color: 'teal',
       connectionStatus: 'disconnected',
-      name: ctx.request.body.name
+      name: ctx.request.body.name,
+      color: ctx.request.body.color || 'teal',
     } as IUser;
     userService.addUser(user);
     const token = sign(
