@@ -25,7 +25,8 @@
     "build:migrations": "tsc -p tsconfig.migrations.json",
     "migration:generate": "./node_modules/.bin/typeorm migration:generate",
     "migration:run": "./node_modules/.bin/typeorm migration:run",
-    "migration:revert": "./node_modules/.bin/typeorm migration:revert"
+    "migration:revert": "./node_modules/.bin/typeorm migration:revert",
+    "prettier": "prettier --config ./prettierrc.json --write \"src/**/*.{ts,tsx,js,jsx,css,json,md}\""
   },
   "engines": {
     "node": ">=8"
@@ -50,9 +51,23 @@
     "concurrently": "^3.5.1",
     "copy": "^0.3.2",
     "eslint": "^6.7.0",
+    "husky": ">=1",
+    "lint-staged": ">=8",
+    "prettier": "1.19.1",
     "mocha": "^5.2.0",
     "supertest": "^3.3.0",
     "supervisor": "^0.12.0",
     "typescript": "~3.5.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,css,json,md}": [
+      "prettier --config ./prettierrc.json --write",
+      "git add"
+    ]
   }
 }
