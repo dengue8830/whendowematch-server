@@ -1,10 +1,10 @@
-import * as SocketIO from "socket.io";
-import { Server } from "http";
-import { verify } from "jsonwebtoken";
-import { Config } from "@foal/core";
-import { eventService } from "./events.service";
-import { userService, IUser } from "./user.service";
-//// var MemcachedStore = require('socket.io-store-memcached');
+import * as SocketIO from 'socket.io';
+import { Server } from 'http';
+import { verify } from 'jsonwebtoken';
+import { Config } from '@foal/core';
+import { eventService } from './events.service';
+import { userService, IUser } from './user.service';
+// var MemcachedStore = require('socket.io-store-memcached');
 
 interface SocketWithSession extends SocketIO.Socket {
   request: {
@@ -43,56 +43,56 @@ class SocketService {
       try {
         const decoded = verify(
           socket.handshake.query.token,
-          Config.get("settings.jwt.secretOrPublicKey")
+          Config.get('settings.jwt.secretOrPublicKey')
         );
         socket.request.session = decoded;
         next();
       } catch (error) {
-        next(new Error("Authentication error dx"));
+        next(new Error('Authentication error dx'));
       }
     });
-    this.io.on("connect", this.onConnect);
+    this.io.on('connect', this.onConnect);
   }
 
   onConnect = (socket: SocketWithSession) => {
-    logger.info("onconnection", socket.request.session);
-    userService.changeConnectionStatus(socket.request.session.id, "connected");
+    logger.info('onconnection', socket.request.session);
+    userService.changeConnectionStatus(socket.request.session.id, 'connected');
     this.io.emit(
-      "userConnected",
+      'userConnected',
       userService.findUserById(socket.request.session.id)
     );
-    socket.on("getSchedules", () => this.onGetSchedules(socket));
-    socket.on("disconnect", () => this.onDisconnect(socket));
-    socket.on("addSchedule", this.onAddSchedule);
-    socket.on("getUsers", () => this.onGetUsers(socket));
+    socket.on('getSchedules', () => this.onGetSchedules(socket));
+    socket.on('disconnect', () => this.onDisconnect(socket));
+    socket.on('addSchedule', this.onAddSchedule);
+    socket.on('getUsers', () => this.onGetUsers(socket));
   };
 
   /** Notify all the users in order to rerender thir user list. */
   onDisconnect = (socket: SocketWithSession) => {
     const userId = socket.request.session.id;
-    userService.changeConnectionStatus(userId, "disconnected");
+    userService.changeConnectionStatus(userId, 'disconnected');
     const user = userService.findUserById(userId);
     if (!user) {
-      console.warn("wtf there is no userId: " + userId);
+      console.warn('wtf there is no userId: ' + userId);
     } else {
-      this.io.emit("userDisconnected", user);
+      this.io.emit('userDisconnected', user);
       logger.info(`disconnected ${user.name}`);
     }
   };
 
   onGetSchedules = (socket: SocketWithSession) => {
-    socket.emit("getSchedules", eventService.events);
+    socket.emit('getSchedules', eventService.events);
   };
 
   onAddSchedule = event => {
     eventService.addEvent(event);
-    this.io.emit("addSchedule", event);
+    this.io.emit('addSchedule', event);
   };
 
   // users
 
   onGetUsers = socket => {
-    socket.emit("getUsers", userService.users);
+    socket.emit('getUsers', userService.users);
   };
 }
 
