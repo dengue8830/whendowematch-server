@@ -20,25 +20,16 @@ async function main() {
   const app = createApp(AppController);
   const httpServer = http.createServer(app);
   const port = Config.get('port', 3001);
-  socketService.init(httpServer);
+  // socketService.init(httpServer);
   httpServer.listen(port, () => {
     console.log(`Listening on port ${port}...`);
   });
 
-  // const httpServerSocket = http.createServer(app);
-  // const socketPort = Config.get('socket_port', 3002);
-  // socketService.init(httpServer);
-  // httpServerSocket.listen(socketPort, () => {
-  //   console.log(`Socket server listening on port ${socketPort}...`);
-  // });
-
-  // createSocketServer(3002, {
-  //   controllers: [MainSocketController]
-  // });
-  // https://github.com/typestack/socket-controllers#using-exist-server-instead-of-creating-a-new-one
-  // useSocketServer(port, {
-  //   controllers: [MainSocketController]
-  // });
+  const httpSocketServer = http.createServer();
+  socketService.init(httpSocketServer);
+  httpSocketServer.listen(3002, () => {
+    console.log(`Socket http server listening on port ${3002}...`);
+  });
 }
 
 main().catch(err => {
