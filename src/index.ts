@@ -18,7 +18,6 @@ async function main() {
   await createConnection();
 
   const app = createApp(AppController);
-  // console.log('sdfxxxx');
   const httpServer = http.createServer(app);
   const port = Config.get('port', 3001);
   socketService.init(httpServer);

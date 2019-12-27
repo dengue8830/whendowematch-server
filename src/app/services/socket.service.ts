@@ -4,8 +4,6 @@ import { verify } from 'jsonwebtoken';
 import { Config } from '@foal/core';
 import { eventService } from './events.service';
 import { userService, IUser } from './user.service';
-// import logger from '../../common/logger';
-// import server from '../../server';
 // var MemcachedStore = require('socket.io-store-memcached');
 
 interface SocketWithSession extends SocketIO.Socket {
@@ -17,8 +15,8 @@ interface SocketWithSession extends SocketIO.Socket {
 }
 
 const logger = {
-  info(text, text2?) {
-    console.log(text, text2);
+  info(title, description?) {
+    console.log(title, description);
   }
 }
 
@@ -37,20 +35,16 @@ class SocketService {
   /**
    * Creates the necesary stuffs to get a working socket connection.
    *
-   * @param server If not specified a new server will be created
-   * to be binded by the socket.
+   * @param server A server instance to be binded.
    */
   init(server: Server) {
     this.io = SocketIO(server);
-    // logger.info(`socket server binded to existing server on port ${server.address().port}`);
     this.io.use((socket, next) => {
       try {
         const decoded = verify(socket.handshake.query.token, Config.get('settings.jwt.secretOrPublicKey'));
         socket.request.session = decoded;
-        console.log('parece estar todo en orden...');
         next();
       } catch (error) {
-        console.log('error auth', error.message);
         next(new Error('Authentication error dx'));
       }
     });
@@ -67,12 +61,13 @@ class SocketService {
     socket.on('getUsers', () => this.onGetUsers(socket));
   }
 
+  /** Notify all the users in order to rerender thir user list. */
   onDisconnect = (socket: SocketWithSession) => {
     const userId = socket.request.session.id;
     userService.changeConnectionStatus(userId, 'disconnected');
     const user = userService.findUserById(userId);
     if (!user) {
-      console.warn('wtf no existe el ' + userId);
+      console.warn('wtf there is no userId: ' + userId);
     } else {
       this.io.emit('userDisconnected', user);
       logger.info(`disconnected ${user.name}`);
@@ -81,8 +76,6 @@ class SocketService {
 
   onGetSchedules = (socket: SocketWithSession) => {
     socket.emit('getSchedules', eventService.events);
-    // this.io.emit('getSchedules', process.env.NODE_APP_INSTANCE);
-    // callback(eventService.events);
   }
 
   onAddSchedule = (event) => {

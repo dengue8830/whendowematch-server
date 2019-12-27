@@ -2,10 +2,6 @@ import { Get, HttpResponseOK, Post, dependency, Context, Config, ValidateBody, H
 import { UserService, IUser, userService } from '../services/user.service';
 import { sign } from 'jsonwebtoken';
 
-// @Hook(() => (ctx, services, response) => {
-//   // Every response of this controller and its sub-controllers will be added this header.
-//   response.setHeader('Access-Control-Allow-Origin', '*');
-// })
 export class ApiAuthController {
 
   @Get('/listusers')
