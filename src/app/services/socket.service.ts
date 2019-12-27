@@ -73,7 +73,13 @@ class SocketService {
     userService.changeConnectionStatus(userId, 'disconnected');
     const user = userService.findUserById(userId);
     if (!user) {
-      console.warn('wtf there is no userId: ' + userId);
+      // Some bug related with restart in memory bd and clear browser data. This would fix when consume from a non volatile bd.
+      console.warn(
+        'wtf there is no userId: ' +
+          userId +
+          ' in ' +
+          JSON.stringify(userService.users)
+      );
     } else {
       this.io.emit('userDisconnected', user);
       logger.info(`disconnected ${user.name}`);
