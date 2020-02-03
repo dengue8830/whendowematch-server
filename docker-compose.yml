@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  dev:
+    build:
+      context: .
+    ports:
+      - 3001:3001
+      - 3002:3002
+    environment:
+      - NODE_ENV=development
+    command: npm run start-dock-dev
+    volumes:
+      - "./src:/app/src"
+
+  prod:
+    build:
+      context: .
+    ports:
+      - 3001:3001
+      - 3002:3002
+    environment:
+      - NODE_ENV=production
+    command: npm run start-dock-prod
+
+  test:
+    build:
+      context: .
+    environment:
+      - CI=true
+    command: npm test
